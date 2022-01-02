@@ -1,0 +1,11 @@
+/Users/williamevans/github/rust-solutions/catr/target/rls/debug/deps/assert_cmd-267ffd60382c8d0c.rmeta: /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/lib.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/assert.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/cargo.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/cmd.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/output.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/color.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/../README.md
+
+/Users/williamevans/github/rust-solutions/catr/target/rls/debug/deps/assert_cmd-267ffd60382c8d0c.d: /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/lib.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/assert.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/cargo.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/cmd.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/output.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/color.rs /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/../README.md
+
+/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/lib.rs:
+/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/assert.rs:
+/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/cargo.rs:
+/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/cmd.rs:
+/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/output.rs:
+/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/color.rs:
+/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/assert_cmd-2.0.2/src/../README.md:
