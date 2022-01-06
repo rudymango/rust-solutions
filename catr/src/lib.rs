@@ -12,6 +12,7 @@ pub struct Config {
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
+// --------------------------------------------------
 pub fn get_args() -> MyResult<Config> {
     let matches = App::new("catr")
         .version("0.1.0")
@@ -48,6 +49,7 @@ pub fn get_args() -> MyResult<Config> {
     })
 }
 
+// --------------------------------------------------
 fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
     match filename {
         "-" => Ok(Box::new(BufReader::new(io::stdin()))),
@@ -55,32 +57,26 @@ fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
     }
 }
 
+// --------------------------------------------------
 pub fn run(config: Config) -> MyResult<()> {
     for filename in config.files {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
-            Ok(_) => {
-                if config.number_lines {
-                    for (iterator, line) in open(&filename).unwrap().lines().enumerate() {
-                        println!("     {}\t{}", iterator + 1, line.unwrap());
-                    }
-                }
-                else if config.number_nonblank_lines {
-                    let mut i = 0;
-                    for line in open(&filename).unwrap().lines() {
-                        let teststr = line.unwrap();
-                        if teststr == "" {
-                            println!("");
-                        } 
-                        else {
-                        println!("     {}\t{}", i + 1, teststr);
-                        i += 1;
+            Ok(file) => {
+                let mut last_num = 0;
+                for (line_num, line_result) in file.lines().enumerate() {
+                    let line = line_result?;
+                    if config.number_lines {
+                        println!("{:6}\t{}", line_num + 1, line);
+                    } else if config.number_nonblank_lines {
+                        if !line.is_empty() {
+                            last_num += 1;
+                            println!("{:6}\t{}", last_num, line);
+                        } else {
+                            println!();
                         }
-                    }
-                }
-                else {
-                    for line in open(&filename).unwrap().lines() {
-                        println!("{}", line.unwrap());
+                    } else {
+                        println!("{}", line);
                     }
                 }
             }
