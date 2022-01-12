@@ -1,5 +1,0 @@
-/Users/williamevans/github/rust-solutions/headr/target/rls/debug/deps/normalize_line_endings-63be628d2df091c7.rmeta: /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/normalize-line-endings-0.3.0/src/lib.rs
-
-/Users/williamevans/github/rust-solutions/headr/target/rls/debug/deps/normalize_line_endings-63be628d2df091c7.d: /Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/normalize-line-endings-0.3.0/src/lib.rs
-
-/Users/williamevans/.cargo/registry/src/github.com-1ecc6299db9ec823/normalize-line-endings-0.3.0/src/lib.rs:

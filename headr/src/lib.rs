@@ -6,8 +6,8 @@ type MyResult<T> = Result<T, Box<dyn Error>>;
 #[derive(Debug)]
 pub struct Config {
     files: Vec<String>,
-    // lines: usize,
-    // bytes: Option<usize>,
+    lines: usize,
+    bytes: Option<usize>,
 }
 // --------------------------------------------------
 pub fn get_args() -> MyResult<Config> {
@@ -20,40 +20,63 @@ pub fn get_args() -> MyResult<Config> {
                 .value_name("FILE")
                 .help("Input file(s)")
                 .default_value("-")
-            )
+                .multiple(true),
+        )
         .arg(
             Arg::with_name("number_lines")
                 .short("n")
-                .help("Displays files with certain amount of lines")
-                .takes_value(true)
+                .help("Number of lines")
+                .default_value("10")
+                .takes_value(true),
         )
         .arg(
             Arg::with_name("number_bytes")
                 .short("c")
-                .help("Displays files with certain amount of bytes")
-                .takes_value(true)
-                .conflicts_with("number_lines")
+                .help("Number of bytes")
+                .takes_value(true),
         )
         .get_matches();
 
-        Ok(Config{
-            files: matches.values_of_lossy("files").unwrap(),
-            // lines: ...
-            // bytes: ...
-        })
+    if matches.occurrences_of("number_lines") > 0 {
+        if matches.occurrences_of("number_bytes") > 0 {
+            panic!(
+                "The argument '--lines <LINES>' cannot be \
+               used with '--bytes <BYTES>'"
+            )
+        }
+    }
+
+    Ok(Config {
+        files: matches.values_of_lossy("files").unwrap(),
+        lines: match parse_positive_int(&matches.values_of_lossy("number_lines").unwrap().join(""))
+        {
+            Ok(n) => n,
+            Err(e) => {
+                panic!("illegal line count -- {}", e);
+            }
+        },
+        bytes: {
+            match matches.values_of_lossy("number_bytes") {
+                None => None,
+                Some(_n) => Some(
+                    match parse_positive_int(
+                        &matches.values_of_lossy("number_bytes").unwrap().join(""),
+                    ) {
+                        Ok(n) => n,
+                        Err(e) => {
+                            panic!("illegal byte count -- {}", e);
+                        }
+                    },
+                ),
+            }
+        },
+    })
 }
 
-
 fn parse_positive_int(val: &str) -> MyResult<usize> {
-    let usize_zero: usize = 0; 
-    if val.parse::<usize>().is_ok() {
-        if val.parse::<usize>().unwrap() == usize_zero {
-            Err(Box::<dyn Error>::from(val))
-        } else {
-        Ok(val.parse::<usize>()?) 
-        }
-    } else {
-        Err(Box::<dyn Error>::from(val))
+    match val.parse() {
+        Ok(n) if n > 0 => Ok(n),
+        _ => Err(From::from(val)),
     }
 }
 
@@ -70,7 +93,6 @@ fn test_parse_positive_int() {
     let res = parse_positive_int("0");
     assert!(res.is_err());
     assert_eq!(res.unwrap_err().to_string(), "0".to_string());
-
 }
 
 // --------------------------------------------------
