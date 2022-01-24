@@ -1,5 +1,7 @@
 use clap::{App, Arg};
 use std::error::Error;
+use std::fs::File;
+use std::io::{self, BufRead, BufReader};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -19,57 +21,50 @@ pub fn get_args() -> MyResult<Config> {
             Arg::with_name("files")
                 .value_name("FILE")
                 .help("Input file(s)")
-                .default_value("-")
-                .multiple(true),
+                .multiple(true)
+                .default_value("-"),
         )
         .arg(
-            Arg::with_name("number_lines")
+            Arg::with_name("lines")
                 .short("n")
+                .long("lines")
+                .value_name("LINES")
                 .help("Number of lines")
-                .default_value("10")
-                .takes_value(true),
+                .default_value("10"),
         )
         .arg(
-            Arg::with_name("number_bytes")
+            Arg::with_name("bytes")
                 .short("c")
-                .help("Number of bytes")
-                .takes_value(true),
+                .long("bytes")
+                .value_name("BYTES")
+                .takes_value(true)
+                .conflicts_with("lines")
+                .help("Number of bytes"),
         )
         .get_matches();
 
-    if matches.occurrences_of("number_lines") > 0 {
-        if matches.occurrences_of("number_bytes") > 0 {
-            panic!(
-                "The argument '--lines <LINES>' cannot be \
-               used with '--bytes <BYTES>'"
-            )
-        }
-    }
+    let lines = matches
+        .value_of("lines")
+        // This Option::map unpacks a &str value from Some and sends it to parse_positive_int
+        .map(parse_positive_int)
+        // The result of .map is <Option<Result>>, and transpose() turns it into <Result<Option>>
+        .transpose()
+        // Propagate Error
+        .map_err(|e| format!("illegal line count -- {}", e))?;
+
+    // Similar logic for bytes
+    let bytes = matches
+        .value_of("bytes")
+        .map(parse_positive_int)
+        .transpose()
+        .map_err(|e| format!("illegal byte count -- {}", e))?;
 
     Ok(Config {
         files: matches.values_of_lossy("files").unwrap(),
-        lines: match parse_positive_int(&matches.values_of_lossy("number_lines").unwrap().join(""))
-        {
-            Ok(n) => n,
-            Err(e) => {
-                panic!("illegal line count -- {}", e);
-            }
-        },
-        bytes: {
-            match matches.values_of_lossy("number_bytes") {
-                None => None,
-                Some(_n) => Some(
-                    match parse_positive_int(
-                        &matches.values_of_lossy("number_bytes").unwrap().join(""),
-                    ) {
-                        Ok(n) => n,
-                        Err(e) => {
-                            panic!("illegal byte count -- {}", e);
-                        }
-                    },
-                ),
-            }
-        },
+        // "lines" value has a default option, and is thus safe to unwrap.
+        lines: lines.unwrap(),
+        // "bytes" should be left as an option. I don't understand this quite yet. "field init shorthand"
+        bytes,
     })
 }
 
@@ -96,7 +91,36 @@ fn test_parse_positive_int() {
 }
 
 // --------------------------------------------------
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
+}
+
+// --------------------------------------------------
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:#?}", config);
+    for filename in &config.files {
+        match open(&filename) {
+            Err(e) => eprintln!("{}: {}", filename, e),
+            Ok(file) => match config.bytes {
+                Some(_n) => {
+                    // ...
+                }
+                None => {
+                    if config.files.len() > 1 {
+                        println!("==> ./{} <==", filename);
+                        for line in file.lines() {
+                            println!("{}", line?);
+                        }
+                    } else {
+                        for line in file.lines() {
+                            println!("{}", line?);
+                        }
+                    }
+                }
+            },
+        }
+    }
     Ok(())
 }

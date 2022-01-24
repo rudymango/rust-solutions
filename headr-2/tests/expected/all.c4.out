@@ -1,25 +1,10 @@
 ==> ./tests/inputs/empty.txt <==
 
 ==> ./tests/inputs/one.txt <==
-Öne line, four words.
-
+Öne
 ==> ./tests/inputs/two.txt <==
-Two lines.
-Four words.
-
+Two 
 ==> ./tests/inputs/three.txt <==
-Three
-lines,
-four words.
-
+Thre
 ==> ./tests/inputs/ten.txt <==
 one
-two
-three
-four
-five
-six
-seven
-eight
-nine
-ten

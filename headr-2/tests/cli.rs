@@ -36,7 +36,6 @@ fn gen_bad_file() -> String {
 }
 
 // --------------------------------------------------
-// Modified test to pass if it succeeds, instead of factoring in "panic" and whatnot.
 #[test]
 fn dies_bad_bytes() -> TestResult {
     let bad = random_string();
@@ -44,7 +43,7 @@ fn dies_bad_bytes() -> TestResult {
     Command::cargo_bin(PRG)?
         .args(&["-c", &bad, EMPTY])
         .assert()
-        .success()
+        .failure()
         .stderr(predicate::str::contains(expected));
 
     Ok(())
@@ -52,14 +51,13 @@ fn dies_bad_bytes() -> TestResult {
 
 // --------------------------------------------------
 #[test]
-// Modified test to pass if it succeeds, instead of factoring in "panic" and whatnot.
 fn dies_bad_lines() -> TestResult {
     let bad = random_string();
     let expected = format!("illegal line count -- {}", &bad);
     Command::cargo_bin(PRG)?
         .args(&["-n", &bad, EMPTY])
         .assert()
-        .success()
+        .failure()
         .stderr(predicate::str::contains(expected));
 
     Ok(())
@@ -111,7 +109,11 @@ fn run(args: &[&str], expected_file: &str) -> TestResult {
 }
 
 // --------------------------------------------------
-fn run_stdin(args: &[&str], input_file: &str, expected_file: &str) -> TestResult {
+fn run_stdin(
+    args: &[&str],
+    input_file: &str,
+    expected_file: &str,
+) -> TestResult {
     // Extra work here due to lossy UTF
     let mut file = File::open(expected_file)?;
     let mut buffer = Vec::new();
